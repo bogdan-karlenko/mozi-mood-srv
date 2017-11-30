@@ -9,6 +9,8 @@ import { LoginComponent } from './login/login.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { KeysPipe } from './keys.pipe';
 import { AuthenticationService } from "./services/authentication.service";
+import { MoodMockService } from './services/mood-mock.service';
+import { HomeComponent } from './home/home.component';
 
 const appRoutes: Routes = [
   { path: 'user', component: UserDetailsComponent },
@@ -25,6 +27,7 @@ const appRoutes: Routes = [
     LoginComponent,
     UserDetailsComponent,
     KeysPipe,
+    HomeComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -33,7 +36,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [AuthenticationService],
+  providers: [AuthenticationService, MoodMockService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

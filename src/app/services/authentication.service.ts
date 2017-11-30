@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router'
 
 @Injectable()
 export class AuthenticationService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private router: Router,
+    private http: HttpClient
+  ) { }
+
+  isAuth: boolean = false;
 
   getUserDetails(token, secret) {
     return this.http.post('http://localhost:8011/login', { acess_token: token, secret: secret })
       .subscribe(
-      data => { return data }, //return data from Observable?
+      data => { localStorage.setItem('currentUser', JSON.stringify(data)); }, //return data from Observable?
       err => { console.log(err) });
   };
 
@@ -17,9 +23,16 @@ export class AuthenticationService {
     this.http.post('http://localhost:8011/login/auth', credentials)
       .subscribe(
       token => {
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('currentToken', JSON.stringify(token));
         this.getUserDetails(token, credentials.password);
-        console.log(user);
       },
-      err => { console.log(err) });
+      err => { console.log(err); });
+    return true;
+  }
+
+  logOut(): void {
+    localStorage.clear();
+    this.router.navigate(['/']);
   }
 }

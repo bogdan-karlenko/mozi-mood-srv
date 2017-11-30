@@ -3,6 +3,7 @@
     <div class="row">
       <div class="col-sm-6 col-sm-offset-3">
         <router-outlet></router-outlet>
+        <a *ngIf = "isAuthenticated" class="btn btn-warning" (click)="logOut()">LogOut</a>
       </div>
     </div>
   </div>
