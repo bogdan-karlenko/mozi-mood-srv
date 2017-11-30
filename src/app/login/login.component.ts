@@ -14,9 +14,13 @@ export class LoginComponent implements OnInit {
     if (!this.user.username || !this.user.password) {
       return false
     }
-    if (this.authService.login(this.user)) {
-      this.router.navigate(['/user']);
-    }
+    this.authService.login(this.user)
+    .then(() => {
+      this.router.navigate(['/user'])
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }
 
   constructor(

@@ -9,14 +9,14 @@ import { AuthenticationService } from './services/authentication.service'
 export class AppComponent {
 
   constructor(
-    private authService: AuthenticationService
-  ) {  }
+    private authService: AuthenticationService,
+  ) { }
 
   title = 'app';
 
   isAuthenticated = localStorage.getItem('isAuthenticated') !== null);
 
- logOut() {
-   this.authService.logOut();
- }
+  logOut() {
+    this.authService.logOut();
+  }
 }

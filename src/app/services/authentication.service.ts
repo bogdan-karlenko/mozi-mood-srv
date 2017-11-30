@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, NgZone } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router'
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map'
@@ -9,32 +9,48 @@ export class AuthenticationService {
 
   constructor(
     private router: Router,
+    private ngZone: NgZone,
     private http: HttpClient
   ) { }
 
   isAuth: boolean = false;
 
   getUserDetails(token, secret) {
-    return this.http.post('http://localhost:8011/login', { acess_token: token, secret: secret })
-      .subscribe(
-      data => { localStorage.setItem('currentUser', JSON.stringify(data)); }, //return data from Observable?
-      err => { console.log(err) });
-  };
+    return new Promise((resolve, reject) => {
+      this.http.post('http://localhost:8011/login',
+        { acess_token: token, secret: secret },
+      { headers: new HttpHeaders().set('Authorization', token) })
+        .subscribe(
+        data => { resolve(data); },
+        err => { console.log(err); reject(err) });
+    })
+  }
+
 
   login(credentials) {
-    this.http.post('http://localhost:8011/login/auth', credentials)
-      .subscribe(
-      token => {
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('currentToken', JSON.stringify(token));
-        this.getUserDetails(token, credentials.password);
-      },
-      err => { console.log(err); });
-    // return true;
+    return new Promise((resolve, reject) => {
+      this.http.post('http://localhost:8011/login/auth', credentials)
+        .subscribe(
+        token => {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('currentToken', JSON.stringify(token));
+          this.getUserDetails(token, credentials.password)
+            .then((user) => {
+              localStorage.setItem('currentUser', JSON.stringify(user));
+              resolve();
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+        },
+        err => { console.log(err); reject(err); });
+    })
   }
 
   logOut(): void {
-    localStorage.clear();
+          localStorage.clear();
+    //ChangeDetectionRef
+    //this.ngZone.run(() => {});
     this.router.navigate(['/']);
   }
 }

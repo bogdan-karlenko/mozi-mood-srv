@@ -16,10 +16,10 @@ export class MoodMockComponent implements OnInit {
 
   ngOnInit() {
 
-    setInterval(() => {
-      let mood = this.moodMock.generateMood();
-      console.log(mood);
-      this.socket.emit('mood_event', JSON.stringify(mood));
-    }, 3 * 1000);
+    // setInterval(() => {
+    //   let mood = this.moodMock.generateMood();
+    //   console.log(mood);
+    //   this.socket.emit('mood_event', JSON.stringify(mood));
+    // }, 3 * 1000);
   }
 }
