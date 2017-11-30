@@ -34,8 +34,16 @@ router.post('/auth', (req, res) => {
     })
 });
 
+router.use('/', (req, res, next) => {
+  if (req.body.acess_token) {
+    let decoded = jwt.verify(req.body.acess_token, req.body.secret)
+    req.body = {decoded};
+  }
+  next();
+})
+
 router.post('/', (req, res) => {
-  let decoded = jwt.verify(req.body.acess_token, req.body.secret);
+  let decoded = req.body.decoded;
   MongoClient.connect(url)
     .then(db => {
       let collection = db.collection('users');
