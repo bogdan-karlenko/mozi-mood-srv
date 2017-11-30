@@ -11,10 +11,13 @@ import { KeysPipe } from './keys.pipe';
 import { AuthenticationService } from "./services/authentication.service";
 import { MoodMockService } from './services/mood-mock.service';
 import { HomeComponent } from './home/home.component';
+import { SocketService } from './services/socket.service';
+import { MoodMockComponent } from './mood-mock/mood-mock.component';
 
 const appRoutes: Routes = [
   { path: 'user', component: UserDetailsComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'mood', component: MoodMockComponent },
   { path: '',
     redirectTo: 'login',
     pathMatch: 'full'
@@ -28,6 +31,7 @@ const appRoutes: Routes = [
     UserDetailsComponent,
     KeysPipe,
     HomeComponent,
+    MoodMockComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),
@@ -36,7 +40,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [AuthenticationService, MoodMockService],
+  providers: [AuthenticationService, MoodMockService, SocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

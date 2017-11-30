@@ -18,10 +18,14 @@ router.post('/auth', (req, res) => {
       let collection = db.collection('users');
       collection.findOne({ name: req.body.username }, { password: 1 })
         .then(user => {
-          let isAuthenticated = bcrypt.compareSync(req.body.password, user.password)
-          console.log('password OK:', isAuthenticated);
-          let token = jwt.sign({ id: user._id }, req.body.password);
-          isAuthenticated ? res.json(token) : res.sendStatus(401);
+          if (user) {
+            let isAuthenticated = bcrypt.compareSync(req.body.password, user.password)
+            console.log('password OK:', isAuthenticated);
+            let token = jwt.sign({ id: user._id }, req.body.password);
+            isAuthenticated ? res.json(token) : res.sendStatus(401);
+          } else {
+            res.sendStatus(401)
+          }
         })
         .catch(err => {
           console.log(err);
@@ -37,7 +41,7 @@ router.post('/auth', (req, res) => {
 router.use('/', (req, res, next) => {
   if (req.body.acess_token) {
     let decoded = jwt.verify(req.body.acess_token, req.body.secret)
-    req.body = {decoded};
+    req.body = { decoded };
   }
   next();
 })
@@ -50,13 +54,20 @@ router.post('/', (req, res) => {
       console.log('decoded.id: ', decoded.id);
       collection.findOne({ "_id": new ObjectId(decoded.id) }, { password: 0 })
         .then((user) => {
-          res.json(user);
+          if (user) {
+            res.json(user);
+          } else {
+            res.sendStatus(401)
+          }
         })
         .catch(err => {
           console.log(err);
         });
       db.close();
     })
+    .catch((err) => {
+      console.log(err);
+    });
 })
 
 module.exports = router;

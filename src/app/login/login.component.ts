@@ -14,11 +14,9 @@ export class LoginComponent implements OnInit {
     if (!this.user.username || !this.user.password) {
       return false
     }
-    this.authService.login(this.user))
-.then(() => {
-  this.router.navigate(['/user']);
-  })
-
+    if (this.authService.login(this.user)) {
+      this.router.navigate(['/user']);
+    }
   }
 
   constructor(

@@ -10,11 +10,11 @@ export class AppComponent {
 
   constructor(
     private authService: AuthenticationService
-  ) { }
+  ) {  }
 
   title = 'app';
 
- isAuthenticated = (localStorage.getItem('isAuthenticated') !== null);
+  isAuthenticated = localStorage.getItem('isAuthenticated') !== null);
 
  logOut() {
    this.authService.logOut();
