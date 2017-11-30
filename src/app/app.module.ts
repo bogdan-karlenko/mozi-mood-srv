@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { KeysPipe } from './keys.pipe';
-
+import { AuthenticationService } from "./services/authentication.service";
 
 const appRoutes: Routes = [
   { path: 'user', component: UserDetailsComponent },
@@ -33,7 +33,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [AuthenticationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

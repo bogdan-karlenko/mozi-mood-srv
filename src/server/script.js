@@ -30,16 +30,16 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 const url = "mongodb://localhost:27017/mozi-mood-srv";
 
+//hashing passwords for each user
 users.forEach(user => {
   let hash = bcrypt.hashSync(user.password, saltRounds);
   user.password = hash;
-  console.log(user.password);
 })
 
 MongoClient.connect(url)
   .then(db => {
     let collection = db.collection('users');
-    collection.remove({});
+    collection.remove({}); //wipe collection
     collection.insertMany(users);
 
     console.log('users successfully added');
