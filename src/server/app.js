@@ -3,6 +3,7 @@ var login = require('./routes/login');
 var bodyParser = require('body-parser');
 var socketio = require('socket.io');
 var http = require('http');
+var cors = require('cors');
 
 var app = express();
 var server = http.createServer(app);
@@ -10,7 +11,7 @@ var server = http.createServer(app);
 var socketServer = http.createServer();
 var io = socketio(socketServer);
 // io.origins('*:*');
-
+app.use(cors({}));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
