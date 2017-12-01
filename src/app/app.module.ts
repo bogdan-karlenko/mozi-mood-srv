@@ -13,6 +13,7 @@ import { MoodMockService } from './services/mood-mock.service';
 import { HomeComponent } from './home/home.component';
 import { SocketService } from './services/socket.service';
 import { MoodMockComponent } from './mood-mock/mood-mock.component';
+import { AppFooterComponent } from './footer/footer.component';
 
 const appRoutes: Routes = [
   { path: 'user', component: UserDetailsComponent },
@@ -32,6 +33,7 @@ const appRoutes: Routes = [
     KeysPipe,
     HomeComponent,
     MoodMockComponent,
+    AppFooterComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

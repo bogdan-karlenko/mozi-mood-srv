@@ -17,10 +17,11 @@ export class SocketService {
     // this.socket.on("connect", () => this.connected());
     // this.socket.on("disconnect", () => this.disconnected());
     this.socket.on('error', (err: string) => {
-      console.log('!!!!!!!!!!!!!!!!!', err);
+      console.log(err);
     });
   }
 
+emit(chanel:string, message:any) {this.socket.emit(chanel, message);}
   // connect() {
   //   this.socket.connect();
   // }
@@ -28,16 +29,16 @@ export class SocketService {
   //   this.socket.disconnect();
   // }
 
-  emit(chanel: string, message: any) {
-    return new Observable<any>(observer => {
-      this.socket.emit(chanel, message, function(data) {
-        if (data.success) {
-          observer.next(data.msg);
-        } else {
-          observer.error(data.msg);
-        }
-        observer.complete();
-      });
-    });
-  }
+  // emit(chanel: string, message: any) {
+  //   return new Observable<any>(observer => {
+  //     this.socket.emit(chanel, message, function(data) {
+  //       if (data.success) {
+  //         observer.next(data.msg);
+  //       } else {
+  //         observer.error(data.msg);
+  //       }
+  //       observer.complete();
+  //     });
+  //   });
+  // }
 }

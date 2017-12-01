@@ -24,8 +24,8 @@ const users = [{
   }
 ];
 
-var MongoClient = require('mongodb').MongoClient;
-var bcrypt = require('bcrypt');
+const MongoClient = require('mongodb').MongoClient;
+const bcrypt = require('bcrypt');
 
 const saltRounds = 10;
 const url = "mongodb://localhost:27017/mozi-mood-srv";

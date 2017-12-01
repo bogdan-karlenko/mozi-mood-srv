@@ -1,10 +1,10 @@
-var express = require('express');
-var MongoClient = require('mongodb').MongoClient;
-var bcrypt = require('bcrypt');
-var jwt = require('jsonwebtoken');
-var ObjectId = require('mongodb').ObjectID;
+const express = require('express');
+const MongoClient = require('mongodb').MongoClient;
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const ObjectId = require('mongodb').ObjectID;
 
-var router = express.Router();
+const router = express.Router();
 
 const saltRounds = 10;
 const url = "mongodb://localhost:27017/mozi-mood-srv";
