@@ -19,10 +19,8 @@ const appRoutes: Routes = [
   { path: 'user', component: UserDetailsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'mood', component: MoodMockComponent },
-  { path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
-  },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '**', component: LoginComponent },
 ];
 
 @NgModule({

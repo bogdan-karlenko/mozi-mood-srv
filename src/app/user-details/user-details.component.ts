@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,10 +14,11 @@ export class UserDetailsComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private authService: AuthenticationService
   ) { }
 
   ngOnInit() {
-    if (localStorage.getItem('isAuthenticated') === null) {
+    if (!this.authService.isAuth()) {
       this.router.navigate(['/login']);
     }
   }

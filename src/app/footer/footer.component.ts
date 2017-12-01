@@ -10,16 +10,11 @@ export class AppFooterComponent implements OnInit {
 
   constructor(private authService: AuthenticationService) { }
 
-  private isAuthenticated: boolean;
-
   logOut() {
     this.authService.logOut();
-    this.isAuthenticated = false;
   }
 
   ngOnInit() {
-
-    this.isAuthenticated = (localStorage.getItem('isAuthenticated') !== null);
   }
 
 }

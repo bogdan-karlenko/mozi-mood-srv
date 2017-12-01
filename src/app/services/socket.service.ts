@@ -8,18 +8,17 @@ export class SocketService {
   private socket: any;
 
   constructor() {
-    this.socket = io('http://localhost:3000', {
-      query: {
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhMWU3NjAwZGYyOTgwNmZhMjZhOTVmMSIsImlhdCI6MTUxMjA2MzQxOX0.za_UOX4njC6u0dUanaDDIYIyVqD8E-alE1vsVOgheDo'
-      },
-      secure: true
-    });
+
+    const token = JSON.parse(localStorage.getItem('currentToken'));
+    this.socket = io('http://localhost:3000/',
+      { query: 'token=' + JSON.stringify(token) }
+    );
     this.socket.on('error', (err: string) => {
-      console.log(err);
+      console.log('socket error:', err);
     });
   }
 
-emit(chanel:string, message:any) {this.socket.emit(chanel, message);}
+  emit(chanel: string, message: any) { this.socket.emit(chanel, message); }
 
 //   emit(chanel: string, message: any) {
 //     return new Observable<any>(observer => {

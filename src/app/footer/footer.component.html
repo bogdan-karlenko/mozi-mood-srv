@@ -1,1 +1,1 @@
-<a *ngIf = "isAuthenticated" class="btn btn-warning" (click)="logOut()">LogOut</a>
+<a [hidden] = "!authService.isAuth()" class="btn btn-warning" (click)="logOut()">LogOut</a>

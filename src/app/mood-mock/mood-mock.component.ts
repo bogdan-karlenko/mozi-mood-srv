@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SocketService } from '../services/socket.service';
 import { MoodMockService } from '../services/mood-mock.service';
+import { AuthenticationService } from '../services/authentication.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-mood-mock',
@@ -11,23 +13,24 @@ export class MoodMockComponent implements OnInit {
 
   constructor(
     private socket: SocketService,
-    private moodMock: MoodMockService
+    private moodMock: MoodMockService,
+    private router: Router,
+    private authService: AuthenticationService
   ) { }
 
   ngOnInit() {
 
     this.moodMock.getMood()
-      .subscribe(mood => {
+      .subscribe(
+      mood => {
         this.socket.emit('mood_event', JSON.stringify(mood));
       },
       err => {
-        console.log(err);
+        console.log('mood-mock error: ', err);
       })
 
-    // setInterval(() => {
-    //   let mood = this.moodMock.generateMood();
-    //   console.log(mood);
-    //   this.socket.emit('mood_event', JSON.stringify(mood));
-    // }, 3 * 1000);
+    if (!this.authService.isAuth()) {
+      this.router.navigate(['/login']);
+    }
   }
 }

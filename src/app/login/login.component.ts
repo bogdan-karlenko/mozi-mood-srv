@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (localStorage.getItem('isAuthenticated') !== null) {
+    if (this.authService.isAuth()) {
       this.router.navigate(['/user']);
     }
   }
