@@ -17,6 +17,10 @@ export class UserDetailsComponent implements OnInit {
     private authService: AuthenticationService
   ) { }
 
+  goToMood() {
+     this.router.navigate(['/mood']);
+  }
+
   ngOnInit() {
     if (!this.authService.isAuth()) {
       this.router.navigate(['/login']);
