@@ -22,8 +22,15 @@ app.use(cors({}));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+// app.use('/', (req, res, next) => {
+//   console.log('request', req.params);
+//   next();
+// })
+
 app.use('/login', login);
 app.use('/users', users);
+
+
 
 const url = "mongodb://localhost:27017/mozi-mood-srv";
 const myDB = require('./db').logic(url);

@@ -1,67 +1,74 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpInterceptor } from '@angular/common/http';
 import { Router } from '@angular/router'
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 
+
 @Injectable()
 export class AuthenticationService {
 
   public currentToken: string;
+  public currentUser: Object;
 
   constructor(
     private router: Router,
     private http: HttpClient
-  ) { this.currentToken = localStorage.getItem('currentToken'); }
-
-  //currentToken: {token: string} = {token: ''};
+  ) {
+  this.currentToken = localStorage.getItem('currentToken');
+  }
 
   getUserDetails(token) {
-    return new Promise((resolve, reject) => {
-      this.http.get('http://localhost:8011/users',
-        {
-          headers:
-            new HttpHeaders().set(
-              'Authorization',
-              JSON.stringify({ token })
-            )
-        })
-        .subscribe(
-        //401 doesn't throw an error here
-        data => {
-          //console.log('response: ', data)
-          resolve(data);
-        },
-        err => {
-          console.log('err: ', err);
-          reject(err)
-        });
-    })
+    return this.http.get('http://localhost:8011/users',
+      {
+        headers:
+          new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${token}`
+          )
+      })
   }
 
   isAuth() {
-    return (!!this.currentToken));
+    return (!!this.currentToken);
+  }
+
+  errorHandler(status) {
+    console.log(status);
+    if (status === 401) {
+        this.logOut();
+    } else {
+      console.log('Unhandled error. Status: ', status);
+    }
+  }
+
+  checkValidity(token) {
+    this.http.get('http://localhost:8011/login',
+      {
+        headers:
+          new HttpHeaders().set(
+            'Authorization',
+            JSON.stringify({ token })
+          ),
+        observe: 'response',
+        params: new HttpParams().set('ValidityCheck', 'true')
+      })
+      .subscribe((data) => { },
+      (err) => {
+        this.errorHandler(err.status)
+      })
   }
 
   login(credentials) {
-    return new Promise((resolve, reject) => {
-      this.http.post('http://localhost:8011/login/auth', credentials)
-        .subscribe(
-        token => {
-          this.currentToken = JSON.stringify(token);
-          localStorage.setItem('currentToken', JSON.stringify(token));
-          this.getUserDetails(token)
-            .then((user) => {
-              localStorage.setItem('currentUser', JSON.stringify(user));
-              resolve();
-            })
-            .catch((err) => {
-              console.log(err);
-            })
-        },
-        err => { console.log(err); reject(err); });
-    })
+    return this.http.post('http://localhost:8011/login', credentials, {observe: 'body'})
+      .do(
+      (token) => {
+        console.log('token response', token);
+        this.currentToken = JSON.stringify(token);
+        localStorage.setItem('currentToken', JSON.stringify(token));
+      })
+      .map((token) => { return this.getUserDetails(token) })
   }
 
   logOut(): void {

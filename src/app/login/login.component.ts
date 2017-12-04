@@ -14,13 +14,23 @@ export class LoginComponent implements OnInit {
     if (!this.user.username || !this.user.password) {
       return false
     }
+
     this.authService.login(this.user)
-    .then(() => {
-      this.router.navigate(['/user'])
-    })
-    .catch((err) => {
-      console.log(err);
-    })
+      .subscribe(
+      (data) => {
+        data.subscribe((user) => {
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.router.navigate(['/user']);
+        },
+          (err) => {
+            this.authService.errorHandler(err.status);
+            //console.log(err)
+          })
+      },
+      (err) => {
+        this.authService.errorHandler(err.status);
+        // console.log(err);
+      })
   }
 
   constructor(
@@ -29,9 +39,17 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (this.authService.isAuth()) {
-      this.router.navigate(['/user']);
+    //---
+    const token = localStorage.getItem('currentToken');
+    if (token) {
+      this.authService.checkValidity(token.split('"').join(''));
+    } else {
+      this.authService.logOut();
     }
+  //---
+  if(this.authService.isAuth()) {
+    this.router.navigate(['/user']);
   }
+}
 
 }

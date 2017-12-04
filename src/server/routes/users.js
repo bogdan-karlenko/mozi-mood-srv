@@ -13,8 +13,12 @@ router.use('/', (req, res, next) => {
   if (req.headers.authorization) {
     const secret = 'JWTSecureSecret';
     const token = JSON.parse(req.headers.authorization).token;
-    let decoded = jwt.verify(token, secret)
-    req.body = { decoded };
+    try {
+      let decoded = jwt.verify(token, secret)
+      req.body = { decoded };
+    } catch (err) {
+      console.log('user JWT error: ', err.message)
+    }
   }
   next();
 })

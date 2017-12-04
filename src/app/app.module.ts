@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ChangeDetectorRef  } from '@angular/core';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -14,6 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { SocketService } from './services/socket.service';
 import { MoodMockComponent } from './mood-mock/mood-mock.component';
 import { AppFooterComponent } from './footer/footer.component';
+import { TokenInterceptor } from './token.interceptor';
 
 const appRoutes: Routes = [
   { path: 'user', component: UserDetailsComponent },
@@ -40,7 +41,13 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [AuthenticationService, MoodMockService, SocketService],
+  providers: [AuthenticationService, MoodMockService, SocketService,
+  // {
+  //     provide: HTTP_INTERCEPTORS,
+  //     useClass: TokenInterceptor,
+  //     multi: true
+  //   }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
