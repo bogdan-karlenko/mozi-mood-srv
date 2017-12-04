@@ -49,27 +49,27 @@ router.use('/', (req, res, next) => {
   next();
 })
 
-router.get('/', (req, res) => {
-  let decoded = req.body.decoded;
-  MongoClient.connect(url)
-    .then(db => {
-      let collection = db.collection('users');
-      collection.findOne({ "_id": new ObjectId(decoded.id) }, { password: 0 })
-        .then((user) => {
-          if (user) {
-            res.json(user);
-          } else {
-            res.status(401).json('Unauthorized');
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      db.close();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+// router.get('/', (req, res) => {
+//   let decoded = req.body.decoded;
+//   MongoClient.connect(url)
+//     .then(db => {
+//       let collection = db.collection('users');
+//       collection.findOne({ "_id": new ObjectId(decoded.id) }, { password: 0 })
+//         .then((user) => {
+//           if (user) {
+//             res.json(user);
+//           } else {
+//             res.status(401).json('Unauthorized');
+//           }
+//         })
+//         .catch(err => {
+//           console.log(err);
+//         });
+//       db.close();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
 
 module.exports = router;

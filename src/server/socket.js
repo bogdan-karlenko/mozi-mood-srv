@@ -1,8 +1,10 @@
-// TODO
 const jwt = require('jsonwebtoken');
 
-var logic = function (io) {
-  console.log('we are in socket.js file');
+let logic = function (io) {
+
+const url = "mongodb://localhost:27017/mozi-mood-srv";
+const myDB = require('./db').logic(url);
+
 
 let socketAuth = false;
 
@@ -28,7 +30,7 @@ let socketAuth = false;
       console.log('a user connected', Object.keys(io.sockets.connected));
       socket
         .on('mood_event', (msg) => {
-          writeToDB({ mood: JSON.parse(msg) },
+          myDB.writeToDB({ mood: JSON.parse(msg) },
             'mood');
           console.log(JSON.parse(msg));
         })

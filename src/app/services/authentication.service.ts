@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router'
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
 
 @Injectable()
 export class AuthenticationService {
@@ -18,7 +19,7 @@ export class AuthenticationService {
 
   getUserDetails(token) {
     return new Promise((resolve, reject) => {
-      this.http.get('http://localhost:8011/login',
+      this.http.get('http://localhost:8011/users',
         {
           headers:
             new HttpHeaders().set(
@@ -29,6 +30,7 @@ export class AuthenticationService {
         .subscribe(
         //401 doesn't throw an error here
         data => {
+          //console.log('response: ', data)
           resolve(data);
         },
         err => {
