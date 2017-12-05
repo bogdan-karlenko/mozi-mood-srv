@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpInterceptor } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { SocketService } from './../services/socket.service'
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
@@ -16,6 +17,7 @@ export class AuthenticationService {
   constructor(
     @Inject (HttpClient) private http,
     private router: Router,
+    private socket: SocketService
   ) {
   this.currentToken = localStorage.getItem('currentToken');
   }
@@ -75,6 +77,7 @@ export class AuthenticationService {
   logOut(): void {
     localStorage.clear();
     this.currentToken = null;
+    this.socket.disconnect();
     this.router.navigate(['/']);
   }
 }

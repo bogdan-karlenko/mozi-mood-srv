@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 })
 export class MoodMockComponent implements OnInit {
 
+  private currentMock;
+
   constructor(
     private socket: SocketService,
     private moodMock: MoodMockService,
@@ -18,27 +20,28 @@ export class MoodMockComponent implements OnInit {
     private authService: AuthenticationService
   ) { }
 
+  private genFreq = 1; //times in sec (Hz)
+
   start_mock() {
-    console.log('mock started');
-  }
-
-    stop_mock() {
-    console.log('mock stoped');
-  }
-
-  ngOnInit() {
-
-    this.moodMock.getMood()
+    if (this.currentMock) { this.currentMock.unsubscribe() }
+    this.currentMock = this.moodMock.getMood(this.genFreq)
       .subscribe(
-      mood => {
+      (mood) => {
         this.socket.emit('mood_event', JSON.stringify(mood));
       },
       err => {
         console.log('mood-mock error: ', err);
       })
+  }
 
+  stop_mock() {
+    if (this.currentMock) { this.currentMock.unsubscribe() }
+  }
+
+  ngOnInit() {
     if (!this.authService.isAuth()) {
       this.router.navigate(['/login']);
     }
+    this.socket.connect();
   }
 }

@@ -33,14 +33,14 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //---
-    const token = localStorage.getItem('currentToken');
-    if (token) {
-      this.authService.checkValidity(token.split('"').join(''));
-    } else {
-      this.authService.logOut();
-    }
-  //---
+  //   //---
+  //   const token = localStorage.getItem('currentToken');
+  //   if (token) {
+  //     this.authService.checkValidity(token.split('"').join(''));
+  //   } else {
+  //     this.authService.logOut();
+  //   }
+  // //---
   if(this.authService.isAuth()) {
     this.router.navigate(['/user']);
   }

@@ -8,8 +8,13 @@ export class SocketService {
   private socket: any;
 
   constructor() {
+  }
+
+  connect() {
 
     const token = JSON.parse(localStorage.getItem('currentToken'));
+    //console.log('FE socket token: ', token);
+
     this.socket = io('http://localhost:3000/',
       { query: 'token=' + JSON.stringify(token) }
     );
@@ -18,18 +23,22 @@ export class SocketService {
     });
   }
 
+  disconnect() {
+    this.socket.disconnect();
+  }
+
   emit(chanel: string, message: any) { this.socket.emit(chanel, message); }
 
-//   emit(chanel: string, message: any) {
-//     return new Observable<any>(observer => {
-//       this.socket.emit(chanel, message, function(data) {
-//         if (data.success) {
-//           observer.next(data.msg);
-//         } else {
-//           observer.error(data.msg);
-//         }
-//         observer.complete();
-//       });
-//     });
-//   }
- }
+  //   emit(chanel: string, message: any) {
+  //     return new Observable<any>(observer => {
+  //       this.socket.emit(chanel, message, function(data) {
+  //         if (data.success) {
+  //           observer.next(data.msg);
+  //         } else {
+  //           observer.error(data.msg);
+  //         }
+  //         observer.complete();
+  //       });
+  //     });
+  //   }
+}

@@ -7,13 +7,14 @@ const myDB = require('./db').logic(url);
 
 
 let socketAuth = false;
+let userID;
 
   io.use((socket, next) => {
     const secret = 'JWTSecureSecret';
     const token = JSON.parse(socket.handshake.query.token);
     //console.log('socket token', token);
     if (token) {
-      if (jwt.verify(token, secret)) {
+      if (userID = jwt.verify(token, secret).id) {
         socketAuth = true;
       } else {
         console.log('jwt error');
@@ -31,7 +32,7 @@ let socketAuth = false;
       console.log('a user connected', Object.keys(io.sockets.connected));
       socket
         .on('mood_event', (msg) => {
-          myDB.writeToDB({ mood: JSON.parse(msg) },
+          myDB.writeToDB({ user_id: userID, mood: JSON.parse(msg) },
             'mood');
           console.log(JSON.parse(msg));
         })

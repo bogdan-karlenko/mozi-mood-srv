@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import * as Rx from 'rxjs';
 
 @Injectable()
 export class MoodMockService {
@@ -11,30 +12,19 @@ export class MoodMockService {
       smile: number,
       sadness: number
     } = {
-        anger: Math.floor(Math.random() * (10 - 0) + 0),
-        smile: Math.floor(Math.random() * (10 - 0) + 0),
-        sadness: Math.floor(Math.random() * (10 - 0) + 0)
+        anger: Math.floor(Math.random() * (10 - 1) + 1), //(a - b) + b | a = max, b = min
+        smile: Math.floor(Math.random() * (10 - 1) + 1),
+        sadness: Math.floor(Math.random() * (10 - 1) + 1)
       }
 
     return mood
   }
 
-  getMood() {
-    return new Observable(observer => {
-      const genMood = this.generateMood;
-      setTimeout(function run() {
-
-        let mood = genMood();
-        if (mood) {
-          observer.next(mood);
-        } else {
-          observer.error('Mood was not generated');
-        }
-
-        setTimeout(run, 3 * 1000);
-      }, 3 * 1000);
-      //observer.complete();
-    })
+  getMood(frequency) {
+    const delay = 1000 / frequency;
+    return Rx.Observable
+      .timer(delay, delay)
+      .map(() => { return this.generateMood() })
   }
 
   constructor() { }
