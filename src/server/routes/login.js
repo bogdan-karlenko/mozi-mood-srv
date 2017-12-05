@@ -15,7 +15,6 @@ router.use('/', (req, res, next) => {
   if (req.headers.authorization) {
     const secret = 'JWTSecureSecret';
     const token = JSON.parse(req.headers.authorization).token;
-    console.log(token);
     try {
       let decoded = jwt.verify(token, secret);
       if (params.ValidityCheck) {
@@ -53,7 +52,7 @@ router.post('/', (req, res, next) => {
             let token = jwt.sign({ id: user._id }, secret);
             isAuthenticated ? res.json(token) : res.sendStatus(401);
           } else {
-            res.sendStatus(401);
+            res.status(402).end();
           }
         })
         .catch(err => {

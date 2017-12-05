@@ -24,6 +24,7 @@ export class MoodMockComponent implements OnInit {
 
   start_mock() {
     if (this.currentMock) { this.currentMock.unsubscribe() }
+    this.socket.setRunning(true);
     this.currentMock = this.moodMock.getMood(this.genFreq)
       .subscribe(
       (mood) => {
@@ -35,7 +36,10 @@ export class MoodMockComponent implements OnInit {
   }
 
   stop_mock() {
-    if (this.currentMock) { this.currentMock.unsubscribe() }
+    if (this.currentMock) {
+      this.currentMock.unsubscribe();
+      //this.socket.setRunning(false);
+    }
   }
 
   ngOnInit() {
@@ -43,5 +47,18 @@ export class MoodMockComponent implements OnInit {
       this.router.navigate(['/login']);
     }
     this.socket.connect();
+
+    //---
+    const token = localStorage.getItem('currentToken');
+    if (token) {
+      this.authService.checkValidity(token.split('"').join(''))
+        .subscribe(
+        err => { console.log('token validation error', err) })
+    } else {
+      this.authService.logOut();
+    }
+    //---
   }
+
+
 }

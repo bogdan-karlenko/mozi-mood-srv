@@ -37,30 +37,16 @@ export class AuthenticationService {
     return (!!this.currentToken);
   }
 
-  // errorHandler(status) {
-  //   console.log(status);
-  //   if (status === 401) {
-  //       this.logOut();
-  //   } else {
-  //     console.log('Unhandled error. Status: ', status);
-  //   }
-  // }
-
   checkValidity(token) {
-    this.http.get('http://localhost:8011/login',
+    return this.http.get('http://localhost:8011/login',
       {
         headers:
           new HttpHeaders().set(
             'Authorization',
             JSON.stringify({ token })
           ),
-        observe: 'response',
+        observe: 'body',
         params: new HttpParams().set('ValidityCheck', 'true')
-      })
-      .subscribe((data) => { },
-      (err) => {
-        //this.errorHandler(err.status)
-        //console.log(err);
       })
   }
 

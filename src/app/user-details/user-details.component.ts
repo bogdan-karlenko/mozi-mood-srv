@@ -18,12 +18,23 @@ export class UserDetailsComponent implements OnInit {
   ) { }
 
   goToMood() {
-     this.router.navigate(['/mood']);
+    this.router.navigate(['/mood']);
   }
 
   ngOnInit() {
     if (!this.authService.isAuth()) {
       this.router.navigate(['/login']);
     }
+
+    //---
+    const token = localStorage.getItem('currentToken');
+    if (token) {
+      this.authService.checkValidity(token.split('"').join(''))
+        .subscribe(
+        err => { console.log('token validation error', err) })
+    } else {
+      this.authService.logOut();
+    }
+    //---
   }
 }

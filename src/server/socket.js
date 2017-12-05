@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const amqp = require('./amqp').logic();
 
 let logic = function (io) {
 
@@ -14,9 +15,10 @@ let userID;
     const token = JSON.parse(socket.handshake.query.token);
     //console.log('socket token', token);
     if (token) {
-      if (userID = jwt.verify(token, secret).id) {
+      try {
+      userID = jwt.verify(token, secret).id
         socketAuth = true;
-      } else {
+      } catch(err) {
         console.log('jwt error');
         socket.disconnect();
       }
@@ -29,15 +31,14 @@ let userID;
 
   io.on('connection', (socket) => {
     if (socketAuth) {
-      console.log('a user connected', Object.keys(io.sockets.connected));
+      console.log('a socket user connected', Object.keys(io.sockets.connected));
+      let senderConn = amqp.connect();
       socket
         .on('mood_event', (msg) => {
-          myDB.writeToDB({ user_id: userID, mood: JSON.parse(msg) },
-            'mood');
-          console.log(JSON.parse(msg));
+          amqp.publisher(senderConn, 'mood', { user_id: userID, mood: JSON.parse(msg) });
         })
         .on('disconnect', (socket) => {
-          console.log('a user disconnected');
+          console.log('a socket user disconnected');
         });
     } else {
       console.log('SocketUser is not authorised');
