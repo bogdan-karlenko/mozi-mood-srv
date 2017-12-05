@@ -4,6 +4,7 @@ import { Router } from '@angular/router'
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/switchMap';
 
 
 @Injectable()
@@ -68,7 +69,7 @@ export class AuthenticationService {
         this.currentToken = JSON.stringify(token);
         localStorage.setItem('currentToken', JSON.stringify(token));
       })
-      .map((token) => { return this.getUserDetails(token) })
+      .switchMap((token) => { return this.getUserDetails(token) })
   }
 
   logOut(): void {

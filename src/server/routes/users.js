@@ -12,12 +12,13 @@ const url = "mongodb://localhost:27017/mozi-mood-srv";
 router.use('/', (req, res, next) => {
   if (req.headers.authorization) {
     const secret = 'JWTSecureSecret';
-    const token = JSON.parse(req.headers.authorization).token;
+    const token = req.headers.authorization.split(/Bearer\s/)[1];;
     try {
       let decoded = jwt.verify(token, secret)
       req.body = { decoded };
     } catch (err) {
       console.log('user JWT error: ', err.message)
+      res.status(401).end();
     }
   }
   next();

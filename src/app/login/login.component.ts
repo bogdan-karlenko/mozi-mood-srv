@@ -17,8 +17,7 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(this.user)
       .subscribe(
-      (data) => {
-        data.subscribe((user) => {
+      (user) => {
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.router.navigate(['/user']);
         },
@@ -26,12 +25,7 @@ export class LoginComponent implements OnInit {
             this.authService.errorHandler(err.status);
             //console.log(err)
           })
-      },
-      (err) => {
-        this.authService.errorHandler(err.status);
-        // console.log(err);
-      })
-  }
+      }
 
   constructor(
     private router: Router,
