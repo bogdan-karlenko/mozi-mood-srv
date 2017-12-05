@@ -18,6 +18,14 @@ export class MoodMockComponent implements OnInit {
     private authService: AuthenticationService
   ) { }
 
+  start_mock() {
+    console.log('mock started');
+  }
+
+    stop_mock() {
+    console.log('mock stoped');
+  }
+
   ngOnInit() {
 
     this.moodMock.getMood()

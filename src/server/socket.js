@@ -11,6 +11,7 @@ let socketAuth = false;
   io.use((socket, next) => {
     const secret = 'JWTSecureSecret';
     const token = JSON.parse(socket.handshake.query.token);
+    //console.log('socket token', token);
     if (token) {
       if (jwt.verify(token, secret)) {
         socketAuth = true;

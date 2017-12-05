@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/user']);
         },
           (err) => {
-            this.authService.errorHandler(err.status);
+            //this.authService.errorHandler(err.status);
             //console.log(err)
           })
       }

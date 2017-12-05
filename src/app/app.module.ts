@@ -14,7 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { SocketService } from './services/socket.service';
 import { MoodMockComponent } from './mood-mock/mood-mock.component';
 import { AppFooterComponent } from './footer/footer.component';
-//import { TokenInterceptor } from './token.interceptor';
+import { TokenInterceptor } from './token.interceptor';
 
 const appRoutes: Routes = [
   { path: 'user', component: UserDetailsComponent },
@@ -42,11 +42,12 @@ const appRoutes: Routes = [
     HttpClientModule,
   ],
   providers: [AuthenticationService, MoodMockService, SocketService,
-  // {
-  //     provide: HTTP_INTERCEPTORS,
-  //     useClass: TokenInterceptor,
-  //     multi: true
-  //   }
+  {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+      deps: [HttpClientModule]
+    }
     ],
   bootstrap: [AppComponent]
 })

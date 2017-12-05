@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpInterceptor } from '@angular/common/http';
-import { Router } from '@angular/router'
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
@@ -14,8 +14,8 @@ export class AuthenticationService {
   public currentUser: Object;
 
   constructor(
+    @Inject (HttpClient) private http,
     private router: Router,
-    private http: HttpClient
   ) {
   this.currentToken = localStorage.getItem('currentToken');
   }
@@ -35,14 +35,14 @@ export class AuthenticationService {
     return (!!this.currentToken);
   }
 
-  errorHandler(status) {
-    console.log(status);
-    if (status === 401) {
-        this.logOut();
-    } else {
-      console.log('Unhandled error. Status: ', status);
-    }
-  }
+  // errorHandler(status) {
+  //   console.log(status);
+  //   if (status === 401) {
+  //       this.logOut();
+  //   } else {
+  //     console.log('Unhandled error. Status: ', status);
+  //   }
+  // }
 
   checkValidity(token) {
     this.http.get('http://localhost:8011/login',
@@ -57,7 +57,8 @@ export class AuthenticationService {
       })
       .subscribe((data) => { },
       (err) => {
-        this.errorHandler(err.status)
+        //this.errorHandler(err.status)
+        //console.log(err);
       })
   }
 
@@ -65,7 +66,6 @@ export class AuthenticationService {
     return this.http.post('http://localhost:8011/login', credentials, {observe: 'body'})
       .do(
       (token) => {
-        console.log('token response', token);
         this.currentToken = JSON.stringify(token);
         localStorage.setItem('currentToken', JSON.stringify(token));
       })

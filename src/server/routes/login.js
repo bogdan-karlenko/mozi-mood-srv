@@ -14,7 +14,6 @@ router.use('/', (req, res, next) => {
   const params = url.parse(req.url, true).query;
   if (req.headers.authorization) {
     const secret = 'JWTSecureSecret';
-    console.log('req.headers.authorization', req.headers.authorization);
     const token = JSON.parse(req.headers.authorization).token;
     console.log(token);
     try {
