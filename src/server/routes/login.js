@@ -18,7 +18,6 @@ router.use('/', (req, res, next) => {
     try {
       let decoded = jwt.verify(token, secret);
       if (params.ValidityCheck) {
-        console.log('ValidityCheck');
         res.sendStatus(200)
       }
     } catch (err) {
@@ -34,7 +33,6 @@ router.use('/', (req, res, next) => {
 })
 
 router.get('/', (req, res, next) => {
-  console.log('/login get', url.parse(req.url, true).query);
 });
 
 router.post('/', (req, res, next) => {

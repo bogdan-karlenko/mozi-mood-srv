@@ -3,55 +3,55 @@ const db = require('./db').logic('mongodb://localhost:27017/mozi-mood-srv');
 
 let logic = () => {
 
-  connect = () => {
-    return amqp.connect('amqp://jmhthooi:-znoE24Q1Mwql1bwIJznCilsyVn4mmzA@sheep.rmq.cloudamqp.com/jmhthooi')
-      .then((conn) => {
-        console.log('amqp connection to', conn.connection.stream._host);
-        return Promise.resolve(conn);
-      })
-
+  connect = (name) => {
+    return (async() => {
+      const conn = await amqp.connect('amqp://jmhthooi:-znoE24Q1Mwql1bwIJznCilsyVn4mmzA@sheep.rmq.cloudamqp.com/jmhthooi');
+      console.log('........', name, 'amqp connected to', conn.connection.stream._host);
+      return conn;
+    })()
   }
 
-  publisher = (connection, channel, data) => {
-    if (connection) {
-      connection
-        .then((conn) => conn.createChannel())
-        .then((ch) => {
-          ch.assertQueue(channel, { durable: false });
-          ch.sendToQueue(channel, new Buffer(JSON.stringify(data)))
-        })
-        .then(() => console.log("---\n [x] Sent to MQ ", data, '\n---'))
-        .catch(err => console.log(err));
-    }
+  disconnect = (name, connection) => {
+    (async() => {
+      const conn = await connection;
+      conn.close();
+      console.log('..X..', name, 'amqp disconnected');
+      return;
+    })();
   }
 
-  consumer = (connection, channel) => {
-    if (connection) {
-      return connection
-        .then((conn) => conn.createChannel())
-        .then((ch) => {
-          ch.assertQueue(channel, { durable: false });
-          //console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", channel);
-          ch.consume(channel, function(msg) {
-            data = JSON.parse(msg.content.toString());
-            db.writeToDB(data, 'mood');
-            console.log('>>>Write to DB completed, data: ', data);
-            //Promise.resolve(msg);
-            //console.log(" [x] Received %s", msg.content.toString());
-          }, { noAck: true });
+  send = (connection, channel, data) => {
+    (async() => {
+      //const conn = await amqp.connect('amqp://jmhthooi:-znoE24Q1Mwql1bwIJznCilsyVn4mmzA@sheep.rmq.cloudamqp.com/jmhthooi');
+      const conn = await connection;
+      const ch = await conn.createChannel();
+      ch.assertQueue(channel, { durable: false });
+      ch.sendToQueue(channel, new Buffer(JSON.stringify(data)))
+      console.log("---\n [x] Sent to MQ ", JSON.stringify(data), '\n---')
+      return;
+    })();
+  }
 
-        })
-    }
+  receive = (connection, channel) => {
+    (async() => {
+      const conn = await connection;
+      //const conn = await amqp.connect('amqp://jmhthooi:-znoE24Q1Mwql1bwIJznCilsyVn4mmzA@sheep.rmq.cloudamqp.com/jmhthooi');
+      const ch = await conn.createChannel();
+      ch.assertQueue(channel, { durable: false });
+      ch.consume(channel, (msg) => {
+        data = JSON.parse(msg.content.toString());
+        db.writeToDB(data, 'mood');
+        console.log('>>>Write to DB completed, data: ', data);
+      }, { noAck: true });
+    })();
   }
 
   return {
-    connect: connect,
-    publisher: publisher,
-    consumer: consumer
+    connect,
+    disconnect,
+    send,
+    receive,
   }
-
 }
 
-module.exports = {
-  logic: logic
-};
+module.exports = { logic };
