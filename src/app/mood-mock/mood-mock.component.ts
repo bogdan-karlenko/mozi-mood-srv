@@ -23,7 +23,9 @@ export class MoodMockComponent implements OnInit {
   private genFreq = 1; //times per sec (Hz)
 
   start_mock() {
+    //to be able to start new generation with changed frequency without pressing stop
     if (this.currentMock) { this.currentMock.unsubscribe() }
+
     this.socket.setRunning(true);
     this.currentMock = this.moodMock.getMood(this.genFreq)
       .subscribe(
@@ -43,6 +45,13 @@ export class MoodMockComponent implements OnInit {
 
   ngOnInit() {
     if (!this.authService.isAuth()) { this.router.navigate(['/login']); }
-    this.socket.connect();
+
+    this.socket.connect()
+      .on('Unauthorized', (msg) => {
+        console.log(msg);
+        //this.socket.disconnect();
+        this.authService.logOut();
+      })
+
     this.authService.checkTokenValidity();
-}
+  }

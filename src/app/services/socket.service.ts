@@ -11,25 +11,21 @@ export class SocketService {
   constructor() {
   }
 
-  setRunning(state) {
-    this.isRunning = state;
-  }
+  setRunning = (state) => { this.isRunning = state; }
 
-  connect() {
-
+  connect = () => {
     const token = JSON.parse(localStorage.getItem('currentToken'));
-    //console.log('FE socket token: ', token);
     this.socket = io('http://localhost:3000/',
-      { query: 'token=' + JSON.stringify(token) }
+      { query: `token=Bearer ${token}` }
     );
     this.socket.on('error', (err: string) => {
       console.log('socket error:', err);
     });
     this.setRunning(true);
-
+    return this.socket;
   }
 
-  disconnect() {
+  disconnect = () => {
     if (this.isRunning) {
       this.socket.disconnect();
       this.setRunning(false);
@@ -38,18 +34,7 @@ export class SocketService {
 
   emit(chanel: string, message: any) {
     this.socket.emit(chanel, message);
+    //const token = JSON.parse(localStorage.getItem('currentToken'));
+    //this.socket.emit(chanel, `token=Bearer ${message}`);
   }
-
-  //   emit(chanel: string, message: any) {
-  //     return new Observable<any>(observer => {
-  //       this.socket.emit(chanel, message, function(data) {
-  //         if (data.success) {
-  //           observer.next(data.msg);
-  //         } else {
-  //           observer.error(data.msg);
-  //         }
-  //         observer.complete();
-  //       });
-  //     });
-  //   }
 }

@@ -11,12 +11,11 @@ let logic = function(io) {
   var status = new EventEmitter;
 
   let socketAuth = false;
-  let users = {};
+  let users = {socket: 'user'};
 
   io.use((socket, next) => {
     const secret = 'JWTSecureSecret';
-    const token = JSON.parse(socket.handshake.query.token);
-    //console.log('socket token', token);
+    const token = socket.handshake.query.token.split(/Bearer\s/)[1];
     if (token) {
       try {
         const user = jwt.verify(token, secret).id;
@@ -24,7 +23,7 @@ let logic = function(io) {
         socketAuth = true;
       } catch (err) {
         console.log('jwt error: ', err.message);
-        socket.disconnect();
+        socket.emit('Unauthorized', 'jwt error:'+err.message);
       }
     } else {
       console.log('no token');
@@ -41,8 +40,8 @@ let logic = function(io) {
         .on('mood_event', (msg) => {
           amqp.send(senderConn, 'mood', { user_id: users[socket.id], mood: JSON.parse(msg) });
         })
-        .on('disconnect', (socket) => {
-          console.log('a socket user disconnected', Object.keys(io.sockets.connected));
+        .on('disconnect', () => {
+          console.log('a socket user disconnected. id:', socket.id);
           amqp.disconnect('sender', senderConn);
           if (Object.keys(io.sockets.connected).length === 0) {
             status.emit('all_disconnected', 'All socket users have been disconnected');

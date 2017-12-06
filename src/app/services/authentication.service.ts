@@ -40,21 +40,12 @@ export class AuthenticationService {
   checkTokenValidity() {
     const currentToken = localStorage.getItem('currentToken');
     if (currentToken) {
-      const token = currentToken.split('"').join('')
       this.http.get('http://localhost:8011/login',
         {
-          headers:
-            new HttpHeaders().set(
-              'Authorization',
-              JSON.stringify({ token })
-            ),
-          observe: 'body',
           params: new HttpParams().set('ValidityCheck', 'true')
         })
         .subscribe();
-    } else {
-      this.logOut();
-    }
+    } else { this.logOut(); }
   }
 
   login(credentials) {

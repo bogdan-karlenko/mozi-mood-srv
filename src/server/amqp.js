@@ -6,7 +6,7 @@ let logic = () => {
   connect = (name) => {
     return (async() => {
       const conn = await amqp.connect('amqp://jmhthooi:-znoE24Q1Mwql1bwIJznCilsyVn4mmzA@sheep.rmq.cloudamqp.com/jmhthooi');
-      console.log('........', name, 'amqp connected to', conn.connection.stream._host);
+      console.log('..V..', name, 'amqp connected to', conn.connection.stream._host);
       return conn;
     })()
   }

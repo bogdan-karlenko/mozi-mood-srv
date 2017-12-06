@@ -14,14 +14,14 @@ router.use('/', (req, res, next) => {
   const params = url.parse(req.url, true).query;
   if (req.headers.authorization) {
     const secret = 'JWTSecureSecret';
-    const token = JSON.parse(req.headers.authorization).token;
+    const token = req.headers.authorization.split(/Bearer\s/)[1];
     try {
       let decoded = jwt.verify(token, secret);
       if (params.ValidityCheck) {
-        res.sendStatus(200)
+        res.status(200).send('{}'); //prevent bodyParser error
       }
     } catch (err) {
-      res.sendStatus(401);
+      res.status(401).send('JWT err ' + err.message);
       console.log('JWT err', err.message);
     } finally {
       if (!params.ValidityCheck) {
@@ -32,8 +32,7 @@ router.use('/', (req, res, next) => {
   next();
 })
 
-router.get('/', (req, res, next) => {
-});
+router.get('/', (req, res, next) => {});
 
 router.post('/', (req, res, next) => {
   const credentials = req.body;
@@ -48,9 +47,11 @@ router.post('/', (req, res, next) => {
             let isAuthenticated = bcrypt.compareSync(req.body.password, user.password)
             console.log('password OK:', isAuthenticated);
             let token = jwt.sign({ id: user._id }, secret);
-            isAuthenticated ? res.json(token) : res.sendStatus(401);
+            isAuthenticated ?
+              res.json(token) :
+              res.status(401).send('Wrong username/password') //wrong pass
           } else {
-            res.status(402).end();
+            res.status(401).send('Wrong username/password'); //no such user
           }
         })
         .catch(err => {
