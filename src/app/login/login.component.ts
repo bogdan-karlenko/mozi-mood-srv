@@ -18,14 +18,10 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.user)
       .subscribe(
       (user) => {
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          this.router.navigate(['/user']);
-        },
-          (err) => {
-            //this.authService.errorHandler(err.status);
-            //console.log(err)
-          })
-      }
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.router.navigate(['/user']);
+      })
+  }
 
   constructor(
     private router: Router,
@@ -33,19 +29,8 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    //---
-    const token = localStorage.getItem('currentToken');
-    if (token) {
-      this.authService.checkValidity(token.split('"').join(''))
-      .subscribe(
-        err => {console.log('token validation error', err)})
-    } else {
-      this.authService.logOut();
-    }
-  //---
-  if(this.authService.isAuth()) {
-    this.router.navigate(['/user']);
+    if (this.authService.isAuth()) { this.router.navigate(['/user']); }
+    this.authService.checkTokenValidity();
   }
-}
 
 }

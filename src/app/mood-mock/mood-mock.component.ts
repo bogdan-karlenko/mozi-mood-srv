@@ -20,7 +20,7 @@ export class MoodMockComponent implements OnInit {
     private authService: AuthenticationService
   ) { }
 
-  private genFreq = 1; //times in sec (Hz)
+  private genFreq = 1; //times per sec (Hz)
 
   start_mock() {
     if (this.currentMock) { this.currentMock.unsubscribe() }
@@ -38,27 +38,11 @@ export class MoodMockComponent implements OnInit {
   stop_mock() {
     if (this.currentMock) {
       this.currentMock.unsubscribe();
-      //this.socket.setRunning(false);
     }
   }
 
   ngOnInit() {
-    if (!this.authService.isAuth()) {
-      this.router.navigate(['/login']);
-    }
+    if (!this.authService.isAuth()) { this.router.navigate(['/login']); }
     this.socket.connect();
-
-    //---
-    const token = localStorage.getItem('currentToken');
-    if (token) {
-      this.authService.checkValidity(token.split('"').join(''))
-        .subscribe(
-        err => { console.log('token validation error', err) })
-    } else {
-      this.authService.logOut();
-    }
-    //---
-  }
-
-
+    this.authService.checkTokenValidity();
 }

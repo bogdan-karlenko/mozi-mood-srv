@@ -46,7 +46,7 @@ const appRoutes: Routes = [
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true,
-      deps: [HttpClientModule]
+      //deps: [HttpClientModule]
     }
     ],
   bootstrap: [AppComponent]

@@ -22,19 +22,7 @@ export class UserDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.authService.isAuth()) {
-      this.router.navigate(['/login']);
-    }
-
-    //---
-    const token = localStorage.getItem('currentToken');
-    if (token) {
-      this.authService.checkValidity(token.split('"').join(''))
-        .subscribe(
-        err => { console.log('token validation error', err) })
-    } else {
-      this.authService.logOut();
-    }
-    //---
+    if (!this.authService.isAuth()) { this.router.navigate(['/login']); }
+    this.authService.checkTokenValidity();
   }
 }
